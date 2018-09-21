@@ -1,24 +1,21 @@
 <template>
-	<li class="pkpListPanelItem pkpListPanelItem--announcement">
+	<li class="pkpListPanelItem pkpListPanelItem--announcement pkpListPanelItem--hasSummary">
 		<div class="pkpListPanelItem__summary -pkpClearfix">
 			<div class="pkpListPanelItem--announcement__mainData">
 				<div class="pkpListPanelItem--announcement__item">
-					{{ item.title }}
+					{{ localize(item.title) }}
 				</div>
-				<div v-if="expired" class="pkpListPanelItem--announcement__activity">
-					<b>Is Expired:</b> {{ item.dateExpiry }}
-				</div>
-				<div v-else="expired" class="pkpListPanelItem--announcement__activity">
-					Will Expire: {{ item.dateExpiry }}
+				<div class="pkpListPanelItem--announcement__expire">
+					<template v-if="expired">
+						Expired on {{ item.dateExpire }}
+					</template>
+					<template v-else-if="item.dateExpire">
+						Will expire on {{ item.dateExpire }}
+					</template>
 				</div>
 			</div>
-			<div class="pkpListPanelItem--announcement__publicationDate">
-				<div :aria-labelledby="announcementPublicationDateLabelId" class="pkpListPanelItem--announcement__publicationDateValue">
-					{{ item.datePublished }}
-				</div>
-				<div :id="announcementPublicationDateLabelId" class="pkpListPanelItem--announcement__publicationDateLabel">
-					{{ i18n.datePublished }}
-				</div>
+			<div class="pkpListPanelItem--announcement__date">
+				{{ item.datePosted }}
 			</div>
 			<button
 				@click="toggleExpanded"
@@ -85,7 +82,7 @@ export default {
 	},
 	computed: {
 		expired: function () {
-			if (Date.now() > new Date(this.item.dateExpiry)) {
+			if (Date.now() > new Date(this.item.dateExpire)) {
 				return true;
 			} else {
 				return false;
@@ -195,19 +192,15 @@ export default {
 	float: left;
 }
 
-.pkpListPanelItem--announcement__publicationDateValue {
-	font-weight: @bold;
+.pkpListPanelItem--announcement__date {
+	float: right;
+	margin-right: @base;
 }
 
-.pkpListPanelItem--announcement__publicationDateLabel {
+.pkpListPanelItem--announcement__expire {
+	margin-top: 0.5em;
+	color: @text-light;
 	font-size: @font-tiny;
 	line-height: @line-tiny;
 }
-
-.pkpListPanelItem--announcement__publicationDate {
-	/* margin-top: 1em; */
-	float: right;
-	margin-right: 1em;
-}
-
 </style>

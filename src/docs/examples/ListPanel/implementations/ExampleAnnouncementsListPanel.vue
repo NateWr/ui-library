@@ -20,24 +20,29 @@ export default {
 			items: [
 				{
 					id: 1,
-					title: 'My announcement 1',
-					datePublished: '2018-08-02',
+					title: {
+						en_US: 'My announcement 1',
+					},
+					datePosted: '2018-08-02',
 					type: 'Type 1',
-					dateExpiry: '2017-02-02',
+					dateExpire: '2017-02-02',
 				},
 				{
 					id: 2,
-					title: 'My announcement 2',
-					datePublished: '2018-08-02',
+					title: {
+						en_US: 'My announcement 2',
+					},
+					datePosted: '2018-08-02',
 					type: 'Type 2',
-					dateExpiry: '2019-02-02',
 				},
 				{
 					id: 3,
-					title: 'My announcement 3',
-					datePublished: '2018-08-02',
+					title: {
+						en_US: 'My announcement 3',
+					},
+					datePosted: '2018-08-02',
 					type: 'Type 3',
-					dateExpiry: '2019-02-02',
+					dateExpire: '2019-02-02',
 				},
 			],
 			itemsMax: 3,
