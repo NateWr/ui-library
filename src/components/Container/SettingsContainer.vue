@@ -1,6 +1,7 @@
 <script type="text/javascript">
 import Container from './Container.vue';
 import AddContextForm from '@/components/Form/context/AddContextForm.vue';
+import AnnouncementsListPanel from '@/components/ListPanel/announcements/AnnouncementsListPanel.vue';
 import EmailTemplatesListPanel from '@/components/ListPanel/emailTemplates/EmailTemplatesListPanel.vue';
 import LicenseForm from '@/components/Form/context/LicenseForm.vue';
 import PkpForm from '@/components/Form/Form.vue';
@@ -13,6 +14,7 @@ export default {
 	extends: Container,
 	components: {
 		AddContextForm,
+		AnnouncementsListPanel,
 		EmailTemplatesListPanel,
 		LicenseForm,
 		PkpForm,

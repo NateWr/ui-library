@@ -9,6 +9,7 @@ import ExampleListPanelOrderable from './ExampleListPanelOrderable.vue';
 import ExampleListPanelPagination from './ExampleListPanelPagination.vue';
 import ExampleListPanelSearch from './ExampleListPanelSearch.vue';
 import ExampleListPanelSelect from './ExampleListPanelSelect.vue';
+import ExampleAnnouncementsListPanel from './ExampleAnnouncementsListPanel.vue';
 import ExampleSubmissionsListPanel from './ExampleSubmissionsListPanel.vue';
 import ExampleSelectSubmissionsListPanel from './ExampleSelectSubmissionsListPanel.vue';
 import ExampleSelectReviewerListPanel from './ExampleSelectReviewerListPanel.vue';
@@ -27,6 +28,7 @@ export default {
 		ExampleListPanelPagination,
 		ExampleListPanelSearch,
 		ExampleListPanelSelect,
+		ExampleAnnouncementsListPanel,
 		ExampleSubmissionsListPanel,
 		ExampleSelectSubmissionsListPanel,
 		ExampleSelectReviewerListPanel,
@@ -48,6 +50,7 @@ export default {
 				ExampleListPanelSelect: 'With Select'
 			},
 			implementations: {
+				ExampleAnnouncementsListPanel: 'AnnouncementsListPanel',
 				ExampleCatalogListPanel: 'CatalogListPanel',
 				ExampleSubmissionsListPanel: 'SubmissionsListPanel',
 				ExampleSelectSubmissionsListPanel: 'SelectSubmissionsListPanel',
