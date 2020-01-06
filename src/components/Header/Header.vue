@@ -3,9 +3,9 @@
 		<span class="pkpHeader__title">
 			<slot />
 		</span>
-		<div v-if="hasActions" class="pkpHeader__actions">
+		<ul v-if="hasActions" class="pkpHeader__actions">
 			<slot name="actions" />
-		</div>
+		</ul>
 	</div>
 </template>
 

@@ -2,6 +2,7 @@
 import Component from '@/docs/Component.vue';
 import ExampleListPanel from './ExampleListPanel.vue';
 import ExampleListPanelActions from './ExampleListPanelActions.vue';
+import ExampleAnnouncements from './ExampleAnnouncements.vue';
 import ExampleListPanelDescription from './ExampleListPanelDescription.vue';
 import ExampleListPanelEmpty from './ExampleListPanelEmpty.vue';
 import ExampleListPanelFilter from './ExampleListPanelFilter.vue';
@@ -14,12 +15,14 @@ import ExampleSelectSubmissionsListPanel from './ExampleSelectSubmissionsListPan
 import ExampleSelectReviewerListPanel from './ExampleSelectReviewerListPanel.vue';
 import ExampleCatalogListPanel from './ExampleCatalogListPanel.vue';
 import ExampleEmailTemplatesListPanel from './ExampleEmailTemplatesListPanel.vue';
+import ExampleKitchenSink from './ExampleKitchenSink.vue';
 
 export default {
 	extends: Component,
 	components: {
 		ExampleListPanel,
 		ExampleListPanelActions,
+		ExampleAnnouncements,
 		ExampleListPanelDescription,
 		ExampleListPanelEmpty,
 		ExampleListPanelFilter,
@@ -31,7 +34,8 @@ export default {
 		ExampleSelectSubmissionsListPanel,
 		ExampleSelectReviewerListPanel,
 		ExampleCatalogListPanel,
-		ExampleEmailTemplatesListPanel
+		ExampleEmailTemplatesListPanel,
+		ExampleKitchenSink
 	},
 	data() {
 		return {
@@ -39,13 +43,15 @@ export default {
 			examples: {
 				ExampleListPanel: 'Base',
 				ExampleListPanelActions: 'With Actions',
+				ExampleAnnouncements: 'Announcements',
 				ExampleListPanelDescription: 'With Description',
 				ExampleListPanelEmpty: 'With No Items',
 				ExampleListPanelFilter: 'With Filter',
 				ExampleListPanelOrderable: 'With Orderable Items',
 				ExampleListPanelPagination: 'With Pagination',
 				ExampleListPanelSearch: 'With Search',
-				ExampleListPanelSelect: 'With Select'
+				ExampleListPanelSelect: 'With Select',
+				ExampleKitchenSink: 'KitchenSink'
 			},
 			implementations: {
 				ExampleCatalogListPanel: 'CatalogListPanel',

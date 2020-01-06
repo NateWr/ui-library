@@ -1,218 +1,112 @@
 <template>
-	<component :is="canSelect ? 'fieldset' : 'div'" :class="classes">
-		<!-- Header -->
-		<slot name="header">
-			<pkp-header>
-				<legend v-if="canSelect">{{ title }}</legend>
-				<component v-else :is="'h' + headingLevel">{{ title }}</component>
+	<div class="pkpListBlock">
+		<pkp-header>
+			<component :is="'h' + headingLevel">
+				<slot name="title">
+					{{ title }}
+				</slot>
 				<spinner v-if="isLoading" />
-				<template v-slot:actions>
-					<ul>
-						<li v-if="canSearch">
-							<search
-								:searchPhrase="searchPhrase"
-								:searchLabel="__('search')"
-								:clearSearchLabel="__('clearSearch')"
-								@search-phrase-changed="setSearchPhrase"
-							/>
-						</li>
-						<li v-if="filters.length">
-							<pkp-button
-								:isActive="isSidebarVisible"
-								icon="filter"
-								:label="__('filter')"
-								@click="toggleSidebar"
-							/>
-						</li>
-						<li v-for="(action, index) in actions" :key="index">
-							<pkp-button v-bind="action" @click="action.click" />
-						</li>
-					</ul>
-				</template>
-			</pkp-header>
+			</component>
+			<slot name="actions">
+				<ul v-if="actions.length">
+					<li v-for="action in actions" :key="action.key">
+						<pkp-button v-bind="action" />
+					</li>
+				</ul>
+			</slot>
+		</pkp-header>
+
+		<slot name="description">
+			<notification v-if="description" type="info" v-html="description" />
 		</slot>
 
-		<!-- Optional description -->
-		<notification v-if="description" type="info">
-			{{ description }}
-		</notification>
-
-		<!-- Body of the panel, including items and sidebar -->
-		<div class="pkpListPanel__body -pkpClearfix">
-			<!-- Filters in the sidebar -->
-			<div
-				v-if="filters.length"
-				ref="sidebar"
-				class="pkpListPanel__sidebar"
-				:class="{'-isVisible': isSidebarVisible}"
-			>
-				<pkp-header
-					class="pkpListPanel__sidebarHeader"
-					:tabindex="isSidebarVisible ? 0 : -1"
-				>
-					<component :is="'h' + headingLevel">
-						<icon icon="filter" :inline="true" />
-						{{ i18n.filter }}
-					</component>
-				</pkp-header>
-				<div
-					v-for="(filterSet, index) in filters"
-					:key="index"
-					class="pkpListPanel__filterSet"
-				>
-					<slot name="filter-set">
-						<pkp-header v-if="filterSet.heading">
-							{{ filterSet.heading }}
-						</pkp-header>
-						<pkp-filter
-							v-for="filter in filterSet.filters"
-							:key="filter.param + filter.value"
-							v-bind="filter"
-							:isFilterActive="isFilterActive(filter.param, filter.value)"
-							:i18n="i18n"
-							@add-filter="addFilter"
-							@remove-filter="removeFilter"
-						/>
-					</slot>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<component :is="'h' + (headingLevel + 1)" class="-screenReader">
-				{{ __('list') }}
-			</component>
-			<div class="pkpListPanel__content" aria-live="polite">
-				<!-- Optional selectAll button -->
-				<label
-					v-if="canSelectAll"
-					class="pkpListPanel__selectAll"
-					@click="toggleSelectAll"
-				>
-					<input type="checkbox" v-model="isSelectAllOn" />
-					<span class="pkpListPanel__selectAllLabel">
-						{{ __('selectAllLabel') }}
-					</span>
-				</label>
-
-				<!-- Items -->
-				<template v-if="!items.length">
-					<div class="pkpListPanel__empty">
-						<slot name="empty">
-							{{ __('empty') }}
+		<div class="pkpListBlock__body -pkpClearfix">
+			<div v-if="filters.length" class="pkpListBlock__sidebar">
+				<slot name="sidebar">
+					<div class="pkpListBlock__sidebarHeader">
+						<slot name="sidebar-header">
+							<component :is="'h' + (headingLevel + 1)">
+								<icon icon="filter" :inline="true" />
+								{{ i18n.filter }}
+							</component>
 						</slot>
 					</div>
+					<div
+						v-for="section in filters"
+						:key="section.title"
+						class="pkpListBlock__sidebarSection"
+					>
+						<slot name="filters">
+							<pkp-header>
+								<component :is="'h' + (headingLevel + 2)">
+									{{ section.title }}
+								</component>
+							</pkp-header>
+							<filter
+								v-for="filter in section.filters"
+								v-bind="filter"
+								:key="filter.param + filter.value"
+							/>
+						</slot>
+					</div>
+				</slot>
+			</div>
+			<component :is="'h' + (headingLevel + 1)" class="-screenReader">
+				{{ i18n.list }}
+			</component>
+			<ul class="pkpListBlock__list" aria-live="assertive">
+				<template v-if="!items.length">
+					<li class="pkpListBlock__empty">
+						<slot name="empty">
+							{{ i18n.empty }}
+						</slot>
+					</li>
 				</template>
 				<template v-else>
-					<ul>
-						<draggable
-							v-model="localItems"
-							:options="draggableOptions"
-							@start="drag = true"
-							@end="drag = false"
-						>
-							<li
-								v-for="item in items"
-								:key="item.id"
-								class="pkpListPanel__item"
-							>
-								<div class="pkpListPanel__summary">
-									<slot name="summary">
-										<div class="pkpListPanel__itemTitle">{{ item.title }}</div>
-										<div
-											v-if="item.subtitle"
-											class="pkpListPanel__itemSubtitle"
-										>
-											{{ item.subtitle }}
-										</div>
-									</slot>
-									<ul>
-										<slot name="itemActions">
-											<li v-for="action in itemActions" :key="action.id">
-												<pkp-button
-													v-bind="action"
-													@click="action.click(item.id)"
-												/>
-											</li>
-										</slot>
-									</ul>
+					<li v-for="item in items" :key="item.key" class="pkpListBlock__item">
+						<div class="pkpListBlock__summary">
+							<slot name="item">
+								<div class="pkpListBlock__itemTitle">{{ item.title }}</div>
+								<div v-if="item.subtitle" class="pkpListBlock__itemTitle">
+									{{ item.subtitle }}
 								</div>
-							</li>
-						</draggable>
-					</ul>
+							</slot>
+						</div>
+						<ul v-if="$slots.itemActions || item.actions.length">
+							<slot name="itemActions">
+								<li v-for="action in item.actions" :key="action.key">
+									<pkp-button v-bind="action" />
+								</li>
+							</slot>
+						</ul>
+					</li>
 				</template>
-			</div>
+			</ul>
 		</div>
-
-		<!-- Optional footer -->
-		<div v-if="hasFooter" class="pkpListPanel__footer">
-			<slot name="footer" />
-		</div>
-	</component>
+	</div>
 </template>
 
 <script>
-import draggable from 'vuedraggable';
 import Icon from '@/components/Icon/Icon.vue';
-import ListPanelItem from '@/components/ListPanel/ListPanelItem.vue';
 import Notification from '@/components/Notification/Notification.vue';
-import Pagination from '@/components/Pagination/Pagination.vue';
-import PkpButton from '@/components/Button/Button.vue';
-import PkpFilter from '@/components/Filter/Filter.vue';
+import Filter from '@/components/Filter/Filter.vue';
 import PkpHeader from '@/components/Header/Header.vue';
 import Spinner from '@/components/Spinner/Spinner.vue';
 
 export default {
-	name: 'ListPanel',
+	name: 'ListBlock',
 	components: {
-		draggable,
 		Icon,
-		ListPanelItem,
 		Notification,
-		Pagination,
-		PkpButton,
-		PkpFilter,
+		Filter,
 		PkpHeader,
 		Spinner
 	},
 	props: {
-		apiUrl: {
-			type: String,
-			default() {
-				return '';
-			}
-		},
-		canOrder: {
-			type: Boolean,
-			default() {
-				return false;
-			}
-		},
-		canSelect: {
-			type: Boolean,
-			default() {
-				return false;
-			}
-		},
-		canSelectAll: {
-			type: Boolean,
-			default() {
-				return false;
-			}
-		},
-		count: {
-			type: Number,
-			required: true
-		},
 		description: {
 			type: String,
 			default() {
 				return '';
-			}
-		},
-		getParams: {
-			type: Object,
-			default() {
-				return {};
 			}
 		},
 		filters: {
@@ -221,27 +115,12 @@ export default {
 				return [];
 			}
 		},
-		headingLevel: {
-			type: Number,
-			required: true
-		},
 		i18n: {
 			type: Object,
 			default() {
 				return {};
 			}
 		},
-		id: {
-			type: String,
-			required: true
-		},
-		isSidebarVisible: {
-			type: Boolean,
-			default() {
-				return false;
-			}
-		},
-		itemActions: Array,
 		items: {
 			type: Array,
 			required: true
@@ -256,41 +135,6 @@ export default {
 				return false;
 			}
 		},
-		offset: {
-			type: Number,
-			required: true
-		},
-		searchPhrase: {
-			type: String,
-			default() {
-				return '';
-			}
-		},
-		selected: {
-			type: [Number, String, Array],
-			default() {
-				if (this.selectorType === 'checkbox') {
-					return [];
-				} else {
-					return '';
-				}
-			}
-		},
-		selectorName: {
-			type: String,
-			default() {
-				return '';
-			}
-		},
-		selectorType: {
-			type: String,
-			default() {
-				return 'checkbox';
-			},
-			validator(value) {
-				return ['checkbox', 'radio'].includes(value);
-			}
-		},
 		title: {
 			type: String,
 			default() {
@@ -300,7 +144,6 @@ export default {
 	},
 	data() {
 		return {
-			actions: [],
 			activeFilters: {},
 			isLoading: false,
 			isOrdering: this.canOrder,
@@ -308,176 +151,7 @@ export default {
 			isSelectAllOn: false
 		};
 	},
-	computed: {
-		/**
-		 * Classes used on the root element
-		 *
-		 * @return {Array}
-		 */
-		classes() {
-			let classes = ['pkpListPanel'];
-			if (this.isOrdering) {
-				classes.push('-isOrdering');
-			}
-			if (this.isLoading) {
-				classes.push('-isLoading');
-			}
-			return classes;
-		},
-
-		/**
-		 * Options for the draggable component
-		 *
-		 * @see https://github.com/SortableJS/Vue.Draggable
-		 */
-		draggableOptions() {
-			return {
-				disabled: !this.isOrdering
-			};
-		},
-
-		/**
-		 * Does this ListPanel have anything in the footer slot?
-		 *
-		 * @return {Boolean}
-		 */
-		hasFooter() {
-			return this.$slots.footer;
-		},
-
-		/**
-		 * Getters and setters for mutating the items array
-		 */
-		localItems: {
-			get() {
-				return this.items;
-			},
-			set(newVal, oldVal) {
-				if (newVal === oldVal) {
-					return;
-				}
-				this.$emit('set', this.id, {items: newVal});
-			}
-		},
-
-		/**
-		 * Get the number of the page of results showing in the list
-		 *
-		 * @return {Number}
-		 */
-		currentPage() {
-			return Math.floor(this.offset / this.count) + 1;
-		},
-
-		/**
-		 * Get the number of the last page of results available for the list
-		 *
-		 * @return {Number}
-		 */
-		lastPage() {
-			return Math.ceil(this.itemsMax / this.count);
-		}
-	},
 	methods: {
-		/**
-		 * Get items for the list. This ListPanel must have a defined
-		 * `get` route to execute this method.
-		 *
-		 * @param {String} handleResponse How to handle the response. `append` to
-		 *  add to the items. Default: null will replace the items.
-		 */
-		get: function(handleResponse) {
-			if (!this.apiUrl) {
-				return;
-			}
-
-			var self = this;
-
-			this.isLoading = true;
-
-			// Address issues with multiple async get requests. Store an ID for the
-			// most recent get request. When we receive the response, we
-			// can check that the response matches the most recent get request, and
-			// discard responses that are outdated.
-			this.latestGetRequest = $.pkp.classes.Helper.uuid();
-
-			$.ajax({
-				url: this.apiUrl,
-				type: 'GET',
-				data: {
-					...this.getParams,
-					...this.activeFilters,
-					searchPhrase: this.searchPhrase,
-					count: this.count,
-					offset: this.offset
-				},
-				_uuid: this.latestGetRequest,
-				error: function(r) {
-					// Only process latest request response
-					if (self.latestGetRequest !== this._uuid) {
-						return;
-					}
-					self.ajaxErrorCallback(r);
-				},
-				success: function(r) {
-					// Only process latest request response
-					if (self.latestGetRequest !== this._uuid) {
-						return;
-					}
-
-					let items;
-					if (handleResponse === 'append') {
-						const existingItemIds = self.items.map(value => value.id);
-						items = [...self.items];
-						for (let item of r.items) {
-							if (existingItemIds.indexOf(item.id) < 0) {
-								items.push(item);
-							}
-						}
-					} else {
-						items = r.items;
-					}
-
-					self.$emit('set', self.id, {
-						items: items,
-						itemsMax: r.itemsMax
-					});
-				},
-				complete() {
-					// Only process latest request response
-					if (self.latestGetRequest !== this._uuid) {
-						return;
-					}
-
-					self.isLoading = false;
-				}
-			});
-		},
-
-		/**
-		 * Set the search phrase
-		 *
-		 * @param {String} value
-		 */
-		setSearchPhrase: function(value) {
-			this.$emit('set', this.id, {
-				searchPhrase: value
-			});
-		},
-
-		/**
-		 * Toggle sidebar visibility
-		 */
-		toggleSidebar() {
-			this.activeFilters = {};
-			this.$emit('set', this.id, {
-				isSidebarVisible: !this.isSidebarVisible
-			});
-			if (this.isSidebarVisible) {
-				this.get();
-			}
-		},
-
 		/**
 		 * Check if a filter is currently active
 		 *
