@@ -1,23 +1,18 @@
 <template>
-	<div class="pkpFilter--slider" :class="classes">
+	<div class="pkpFilter pkpFilter--slider">
 		<button v-if="isFilterActive" class="pkpFilter__remove" @click="remove">
 			<icon icon="times-circle-o" />
 			<span class="-screenReader">
-				{{ __('filterRemove', {filterTitle: title}) }}
+				{{ __('common.filterRemove', {filterTitle: title}) }}
 			</span>
 		</button>
 		<button v-else class="pkpFilter__add" @click="enable">
 			<icon icon="plus-square-o" />
 			<span class="-screenReader">
-				{{ __('filterAdd', {filterTitle: title}) }}
+				{{ __('common.filterAdd', {filterTitle: title}) }}
 			</span>
 		</button>
-		<div
-			class="pkpFilter__inputTitle"
-			:tabindex="!isFilterActive ? -1 : false"
-			aria-hidden="true"
-			@click="toggle"
-		>
+		<div class="pkpFilter__inputTitle" aria-hidden="true" @click="toggle">
 			{{ title }}
 		</div>
 		<div class="pkpFilter__input pkpFilter__input--slider">
@@ -63,10 +58,6 @@ export default {
 				return '';
 			}
 		},
-		isVisible: {
-			type: Boolean,
-			required: true
-		},
 		max: {
 			type: Number,
 			required: true
@@ -89,19 +80,6 @@ export default {
 		}
 	},
 	computed: {
-		/**
-		 * Classes to apply to the root element
-		 *
-		 * @return {Array}
-		 */
-		classes() {
-			let classes = Filter.computed.classes.apply(this);
-			if (this.isVisible) {
-				classes.push('-isVisible');
-			}
-			return classes;
-		},
-
 		/**
 		 * A unique ID to use as the reference for the slider
 		 *
@@ -137,21 +115,6 @@ export default {
 		remove() {
 			this.$emit('remove-filter', this.param);
 		}
-	},
-	watch: {
-		/**
-		 * Refresh any sliders whenever the filter is opened or closed. This
-		 * updates the width of the component when the filter has fully expanded.
-		 */
-		isVisible: function(newVal, oldVal) {
-			if (!newVal || newVal === oldVal) {
-				return;
-			}
-			let slider = this.$refs[this.sliderRef];
-			setTimeout(function() {
-				slider.refresh();
-			}, 300);
-		}
 	}
 };
 </script>
@@ -159,20 +122,11 @@ export default {
 <style lang="less">
 @import '../../styles/_import';
 
-/**
- * Fade the slider in on a slight delay. This gives the slider component time
- * to refresh it's width after the filters have slid into view.
- */
 .pkpFilter--slider {
+	position: relative;
 	padding-left: 1rem;
 	padding-right: 1rem;
-	opacity: 0;
-	transition: opacity 0.4s ease-in-out 0.4s, left 0s ease-in-out 0.4s,
-		width 0s ease-in-out 0.4s;
-
-	&.-isVisible {
-		opacity: 1;
-	}
+	max-width: 12rem; // prevents the slider from initializing larger than the sidebar
 }
 
 .pkpFilter--slider.pkpFilter--disabled {
