@@ -51,8 +51,7 @@
 						class="doiListItem__itemMetadata--badge"
 						:is-warnable="true"
 					>
-						<icon icon="exclamation" :inline="true" />
-						Needs depositing
+						Not Deposited
 					</badge>
 				</div>
 
@@ -71,9 +70,6 @@
 		>
 			<div class="doiListItem__doiSummary">
 				<div class="doiListItem__doiDetail">
-					<pkp-button v-if="crossrefPluginEnabled" :is-primary="true">
-						Deposit DOI
-					</pkp-button>
 					<!-- TODO: Does not work with issues -->
 					<pkp-button
 						v-if="item['crossref::status'] === 'failed'"
@@ -104,11 +100,6 @@
 						</modal-content>
 					</modal>
 				</div>
-				<div class="doiListItem__doiActions">
-					<badge v-if="crossrefPluginEnabled">
-						{{ depositStatusString }}
-					</badge>
-				</div>
 			</div>
 			<list>
 				<list-item v-for="item in doiList" :key="item.id">
@@ -126,6 +117,11 @@
 					</div>
 				</list-item>
 			</list>
+			<div class="listPanel__itemExpandedActions">
+				<pkp-button v-if="crossrefPluginEnabled">
+					Deposit DOIs
+				</pkp-button>
+			</div>
 		</div>
 	</div>
 </template>

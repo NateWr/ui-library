@@ -11,50 +11,49 @@
 								:searchPhrase="searchPhrase"
 								@search-phrase-changed="setSearchPhrase"
 							/>
-
-							<pkp-button
-								:is-active="isSidebarVisible"
-								@click="isSidebarVisible = !isSidebarVisible"
-							>
-								<icon icon="filter" :inline="true" />
-								<!-- TODO: Localize text -->
-								Filters
-							</pkp-button>
-						</template>
-					</pkp-header>
-
-					<div class="doiListPanel__options">
-						<div v-if="isSelectable" class="listPanel__selectAllWrapper">
-							<pkp-button @click="toggleSelectAll">
-								<icon
-									:icon="isSelectAllOn ? 'check-square-o' : 'square-o'"
-									:inline="true"
-								/>
-								Select All
-							</pkp-button>
-							<div class="doiListPanel__options--button">
-								<dropdown label="Actions">
+							<dropdown label="Bulk Actions">
+								<div class="pkpDropdown__section">
+									<div class="app__userNav__loggedInAs">
+										Take action on 3 selected items.
+										<div>
+											<button class="-linkButton" @click="toggleSelectAll">
+												Select All
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="pkpDropdown__section">
 									<ul>
 										<li>
 											<button class="pkpDropdown__action">
-												Deposit selected
+												Deposit
 											</button>
 										</li>
 										<!-- TODO: Remove placeholder button -->
 										<li>
-											<button class="pkpDropdown__action">Button Two</button>
+											<button class="pkpDropdown__action">Assign DOIs</button>
+										</li>
+										<li>
+											<button
+												class="pkpDropdown__action"
+												@click="toggleExpandAll"
+											>
+												<!-- TODO: Localize text -->
+												{{ isExpandAllOn ? 'Collapse' : 'Expand' }}
+											</button>
 										</li>
 									</ul>
-								</dropdown>
-							</div>
-						</div>
-						<span class="doiListPanel__options--button">
-							<pkp-button @click="toggleExpandAll">
-								<!-- TODO: Localize text -->
-								{{ isExpandAllOn ? 'Collapse all' : 'Expand all' }}
+								</div>
+							</dropdown>
+							<pkp-button
+								ref="modalDepositButton"
+								:isPrimary="true"
+								@click="openDepositDialog"
+							>
+								Deposit
 							</pkp-button>
-						</span>
-					</div>
+						</template>
+					</pkp-header>
 				</template>
 
 				<template slot="sidebar">
@@ -219,7 +218,7 @@ export default {
 			activeFilters: {},
 			isExpandAllOn: false,
 			isSelectAllOn: false,
-			isSidebarVisible: false,
+			isSidebarVisible: true,
 			selected: []
 		};
 	},
@@ -360,6 +359,23 @@ export default {
 				newFilters[param] = newFilters[param].filter(v => v !== value);
 			}
 			this.activeFilters = newFilters;
+		},
+		openDepositDialog() {
+			this.openDialog({
+				cancelLabel: 'Cancel',
+				confirmLabel: 'Deposit DOIs',
+				message:
+					'You are about to send DOI metadata records for 23 submissions to Crossref. Are you sure you want to deposit these records?',
+				modalName: 'deposit',
+				title: 'Deposit DOIs',
+				callback: () => {
+					// This is where you would make your ajax request.
+					// This code just simulates a server request
+					setTimeout(() => {
+						this.$modal.hide('deposit');
+					}, 2000);
+				}
+			});
 		}
 	},
 	computed: {
