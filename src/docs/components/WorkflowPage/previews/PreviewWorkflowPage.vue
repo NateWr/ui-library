@@ -52,6 +52,33 @@
 		<tabs default-tab="workflow">
 			<tab id="workflow" label="Workflow">
 				... Workflow ...
+				<div>
+					<pkp-button ref="requestRevisionsButton" @click="openNewDiscussion">
+						Add discussion
+					</pkp-button>
+				</div>
+				<modal
+					v-bind="MODAL_PROPS"
+					name="newDiscussion"
+					@closed="setFocusToRef('newDiscussionButton')"
+				>
+					<modal-content
+						closeLabel="Close"
+						modalName="newDiscussion"
+						title="Start a Discussion"
+					>
+						<composer
+							:variables="variables"
+							templateApiUrl="http://example.org/__key__"
+						>
+							<div class="composer__description">
+								Open a discussion in the
+								<strong>Copyediting</strong>
+								stage.
+							</div>
+						</composer>
+					</modal-content>
+				</modal>
 			</tab>
 			<tab id="publication" label="Publication">
 				<div class="pkpPublication" ref="publication" aria-live="polite">
@@ -310,6 +337,7 @@ export default {
 				dateSubmitted: '2018-08-03',
 				id: 732,
 				lastModified: '2019-06-03 18:03:32',
+				locale: 'en_US',
 				stageId: 5,
 				status: 1,
 				submissionProgress: 0,

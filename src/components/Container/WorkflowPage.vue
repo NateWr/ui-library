@@ -1,6 +1,7 @@
 <script type="text/javascript">
-import Page from './Page.vue';
+import Composer from '@/components/Composer/Composer.vue';
 import Dropdown from '@/components/Dropdown/Dropdown.vue';
+import Page from './Page.vue';
 import PkpHeader from '@/components/Header/Header.vue';
 import LocalizeSubmission from '@/mixins/localizeSubmission.js';
 import ajaxError from '@/mixins/ajaxError';
@@ -11,17 +12,20 @@ export default {
 	extends: Page,
 	mixins: [LocalizeSubmission, modal, ajaxError],
 	components: {
+		Composer,
 		Dropdown,
 		PkpHeader
 	},
 	data() {
 		return {
 			activityLogLabel: '',
+			addDiscussionApiUrl: '',
 			canAccessPublication: false,
 			canEditPublication: false,
 			contributorsGridUrl: '',
 			currentPublication: null,
 			editorialHistoryUrl: '',
+			emailTemplateApiUrl: '',
 			isLoadingVersion: false,
 			publicationFormIds: [],
 			publicationList: [],
@@ -92,6 +96,19 @@ export default {
 			return this.replaceLocaleParams(this.publicationTabsLabel, {
 				version: this.workingPublication.version
 			});
+		},
+
+		/**
+		 * Computed variables for email templates
+		 */
+		variables() {
+			return {
+				'{$contextName}': 'Journal of Public Knowledge',
+				'{$submissionId}': this.submission.id,
+				'{$submissionTitle}': this.workingPublication.title[
+					this.submission.locale
+				]
+			};
 		}
 	},
 	methods: {
@@ -231,6 +248,13 @@ export default {
 					'" ' +
 					'class="pkp_modal pkpModalWrapper" tabIndex="-1"></div>'
 			).pkpHandler('$.pkp.controllers.modal.AjaxModalHandler', opts);
+		},
+
+		/**
+		 * Open a modal to create a new discussion
+		 */
+		openNewDiscussion() {
+			this.$modal.show('newDiscussion');
 		},
 
 		/**
