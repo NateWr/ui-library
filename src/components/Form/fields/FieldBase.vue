@@ -281,8 +281,7 @@ export default {
 		outline: 0;
 	}
 
-	&:disabled,
-	&:read-only{
+	&:disabled {
 		background: @bg-light;
 		cursor: not-allowed;
 		// Lighter than @text but accessible on @bg-light
@@ -292,5 +291,12 @@ export default {
 			border-color: @bg-border-color;
 		}
 	}
+}
+
+// :read-only causes unexpected effects on editable fields
+// that aren't input or textarea
+input.pkpFormField__input:read-only,
+textarea.pkpFormField__input:read-only {
+	&:extend(.pkpFormField__input:disabled);
 }
 </style>
