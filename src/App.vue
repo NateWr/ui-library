@@ -33,6 +33,11 @@
 					</router-link>
 				</li>
 				<li>
+					<router-link to="/component/SubmissionWizardPage">
+						SubmissionWizardPage
+					</router-link>
+				</li>
+				<li>
 					<router-link to="/component/StatsPage">
 						StatsPage
 					</router-link>
@@ -66,6 +71,7 @@
 				</li>
 				<li><router-link to="/component/Badge">Badge</router-link></li>
 				<li><router-link to="/component/Button">Button</router-link></li>
+				<li><router-link to="/component/ButtonRow">ButtonRow</router-link></li>
 				<li><router-link to="/component/Chart">Chart</router-link></li>
 				<li><router-link to="/component/Composer">Composer</router-link></li>
 				<li><router-link to="/component/DateRange">DateRange</router-link></li>
