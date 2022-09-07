@@ -129,7 +129,7 @@ export default {
 			default: false
 		},
 		options: {
-			type: Array,
+			type: [Array, Object],
 			required: true
 		},
 		value: {
