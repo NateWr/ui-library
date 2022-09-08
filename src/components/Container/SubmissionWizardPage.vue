@@ -519,6 +519,7 @@ export default {
 		 */
 		validate() {
 			this.isValidating = true;
+			this.errors = {};
 
 			const waitForSaves = setInterval(() => {
 				if (this.isAutosaving || this.isDisconnected) {
