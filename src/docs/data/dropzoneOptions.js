@@ -1,6 +1,5 @@
 export default {
 	maxFilesize: 2,
-	url: 'https://httpbin.org/post',
 	dropzoneDictDefaultMessage: 'Drop files here to upload',
 	dropzoneDictFallbackMessage:
 		"Your browser does not support drag'n'drop file uploads.",

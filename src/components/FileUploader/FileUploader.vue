@@ -30,15 +30,17 @@ export default {
 			type: String,
 			required: true
 		},
+		canDragAndDrop: {
+			type: Boolean,
+			default() {
+				return true;
+			}
+		},
 		filenameLocale: {
 			type: String,
 			default() {
 				return '';
 			}
-		},
-		files: {
-			type: Array,
-			required: true
 		},
 		id: {
 			type: String,
@@ -64,6 +66,7 @@ export default {
 	data() {
 		return {
 			dragEventCounter: 0,
+			files: [],
 			isDragging: false,
 			status: ''
 		};
@@ -214,13 +217,12 @@ export default {
 			this.$nextTick(() => {
 				this.$nextTick(() => {
 					this.$nextTick(() => {
-						const newFiles = this.files.map(file => {
+						this.files = this.files.map(file => {
 							if (file.id === erroredFile.upload.uuid) {
 								file.errors = errors;
 							}
 							return file;
 						});
-						this.$emit('updated:files', newFiles);
 					});
 				});
 			});
@@ -243,7 +245,7 @@ export default {
 						errors: []
 					};
 				});
-				this.$emit('updated:files', this.files.concat(newFiles));
+				this.files = this.files.concat(newFiles);
 			});
 		},
 
@@ -254,10 +256,9 @@ export default {
 		 * @see https://www.dropzonejs.com/#event-list
 		 */
 		dropzoneRemovedFile(file) {
-			const files = this.files.filter(
+			this.files = this.files.filter(
 				item => !item.id || item.id !== file.upload.uuid
 			);
-			this.$emit('updated:files', files);
 		},
 
 		/**
@@ -268,13 +269,13 @@ export default {
 		 * @see https://www.dropzonejs.com/#event-list
 		 */
 		dropzoneSuccess(file, response) {
-			const files = this.files.map(item => {
+			this.files = this.files.map(item => {
 				if (item.id === file.upload.uuid) {
 					return response;
 				}
 				return item;
 			});
-			this.$emit('updated:files', files);
+			this.$emit('uploaded:file', response);
 		},
 
 		/**
@@ -298,13 +299,12 @@ export default {
 		 * @see https://www.dropzonejs.com/#event-list
 		 */
 		dropzoneUploadProgress(file, progress) {
-			const files = this.files.map(item => {
+			this.files = this.files.map(item => {
 				if (item.id === file.upload.uuid) {
 					item.progress = progress;
 				}
 				return item;
 			});
-			this.$emit('set', this.id, files);
 		},
 
 		/**
@@ -314,23 +314,32 @@ export default {
 			this.$refs.dropzone.dropzone.hiddenFileInput.click();
 		}
 	},
+	watch: {
+		files(newVal, oldVal) {
+			this.$emit('updated:files', newVal);
+		}
+	},
 	mounted() {
-		/**
-		 * Listen for when the user performs a drag-and-drop action
-		 */
-		document.addEventListener('dragenter', this.dragenter, true);
-		document.addEventListener('dragleave', this.dragleave, true);
-		document.addEventListener('dragover', this.drop, true);
-		document.addEventListener('drop', this.drop);
+		if (this.canDragAndDrop) {
+			/**
+			 * Listen for when the user performs a drag-and-drop action
+			 */
+			document.addEventListener('dragenter', this.dragenter, true);
+			document.addEventListener('dragleave', this.dragleave, true);
+			document.addEventListener('dragover', this.drop, true);
+			document.addEventListener('drop', this.drop);
+		}
 	},
 	destroyed() {
-		/**
-		 * Clean up listeners
-		 */
-		document.removeEventListener('dragenter', this.dragenter, true);
-		document.removeEventListener('dragleave', this.dragleave, true);
-		document.removeEventListener('dragover', this.drop, true);
-		document.removeEventListener('drop', this.drop);
+		if (this.canDragAndDrop) {
+			/**
+			 * Clean up listeners
+			 */
+			document.removeEventListener('dragenter', this.dragenter, true);
+			document.removeEventListener('dragleave', this.dragleave, true);
+			document.removeEventListener('dragover', this.drop, true);
+			document.removeEventListener('drop', this.drop);
+		}
 	}
 };
 </script>

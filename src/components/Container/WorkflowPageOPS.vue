@@ -1,15 +1,24 @@
 <script type="text/javascript">
 import WorkflowPage from './WorkflowPage.vue';
+import GalleysListPanel from '../ListPanel/galleys/GalleysListPanel.vue';
 
 export default {
 	name: 'WorkflowPageOPS',
 	extends: WorkflowPage,
+	components: {
+		GalleysListPanel
+	},
 	data() {
 		return {
 			sectionWordLimits: {}
 		};
 	},
 	methods: {
+		updateGalleys(galleys) {
+			window.console.log('updateGalleys', galleys);
+			this.workingPublication.galleys = [...galleys];
+		},
+
 		/**
 		 * Update the relation form to match a particular publication
 		 *

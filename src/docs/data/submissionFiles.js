@@ -1,5 +1,6 @@
 export default [
 	{
+		_href: 'http://example.org/submission-file/232',
 		id: 232,
 		fileId: 1232,
 		name: {
@@ -19,6 +20,7 @@ export default [
 			'https://example.com/publicknowledge/$$$call$$$/api/file/file-api/download-file?id=232&submissionId=22&stageId=2'
 	},
 	{
+		_href: 'http://example.org/submission-file/233',
 		id: 233,
 		fileId: 1233,
 		name: {
@@ -39,6 +41,7 @@ export default [
 			'https://example.com/publicknowledge/$$$call$$$/api/file/file-api/download-file?id=233&submissionId=22&stageId=2'
 	},
 	{
+		_href: 'http://example.org/submission-file/234',
 		id: 234,
 		fileId: 1234,
 		name: {

@@ -178,34 +178,6 @@ export default {
 		},
 
 		/**
-		 * Load/reload the representations grid (galleys/publication formats)
-		 *
-		 * @param Object publication Load representations for this publication
-		 */
-		loadRepresentationsGrid(publication) {
-			if (!this.$refs.representations) {
-				return;
-			}
-			const $representationsEl = $(this.$refs.representations);
-			const sourceUrl = this.representationsGridUrl.replace(
-				'__publicationId__',
-				publication.id
-			);
-			if (!$.pkp.classes.Handler.hasHandler($representationsEl)) {
-				$representationsEl.pkpHandler('$.pkp.controllers.UrlInDivHandler', {
-					sourceUrl: sourceUrl,
-					refreshOn: 'form-success'
-				});
-			} else {
-				const representationsHandler = $.pkp.classes.Handler.getHandler(
-					$representationsEl
-				);
-				representationsHandler.setSourceUrl(sourceUrl);
-				representationsHandler.reload();
-			}
-		},
-
-		/**
 		 * Open a modal displaying the editorial history
 		 */
 		openActivity() {
@@ -359,21 +331,21 @@ export default {
 		 * Update the submission details
 		 */
 		refreshSubmission() {
-			const self = this;
 			$.ajax({
 				url: this.submissionApiUrl,
 				type: 'GET',
+				context: this,
 				success(submission) {
 					// Store some publication data and discard the rest
 					submission.publications.forEach(publication =>
-						self.updatePublicationInList(publication)
+						this.updatePublicationInList(publication)
 					);
 					delete submission.publications;
-					self.submission = {};
-					self.submission = submission;
+					this.submission = {};
+					this.submission = submission;
 				},
 				error(r) {
-					self.ajaxErrorCallback(r);
+					this.ajaxErrorCallback(r);
 				}
 			});
 		},
@@ -437,22 +409,22 @@ export default {
 		 */
 		setWorkingPublicationById(publicationId) {
 			this.isLoadingVersion = true;
-			var self = this;
 
 			$.ajax({
 				url: this.submissionApiUrl + '/publications/' + publicationId,
+				context: this,
 				type: 'GET',
 				error(r) {
-					self.isLoadingVersion = false;
-					self.ajaxErrorCallback(r);
+					this.isLoadingVersion = false;
+					this.ajaxErrorCallback(r);
 				},
 				success(r) {
-					self.workingPublication = {};
-					self.workingPublication = r;
-					self.updatePublicationInList(r);
-					self.$nextTick(() => {
-						self.setFocusIn(self.$refs.publication);
-						self.isLoadingVersion = false;
+					this.workingPublication = {};
+					this.workingPublication = r;
+					this.updatePublicationInList(r);
+					this.$nextTick(() => {
+						this.setFocusIn(this.$refs.publication);
+						this.isLoadingVersion = false;
 					});
 				}
 			});
@@ -463,7 +435,6 @@ export default {
 		 */
 		unpublish(publication) {
 			this.isLoadingVersion = true;
-			var self = this;
 
 			$.ajax({
 				url:
@@ -471,24 +442,24 @@ export default {
 					'/publications/' +
 					publication.id +
 					'/unpublish',
+				context: this,
 				type: 'POST',
 				headers: {
 					'X-Csrf-Token': pkp.currentUser.csrfToken,
 					'X-Http-Method-Override': 'PUT'
 				},
 				error(r) {
-					self.isLoadingVersion = false;
-					self.ajaxErrorCallback(r);
+					this.isLoadingVersion = false;
+					this.ajaxErrorCallback(r);
 				},
 				success(r) {
-					self.workingPublication = {};
-					self.workingPublication = r;
-					self.updatePublicationInList(r);
-					self.setPublicationForms(r);
-					self.loadRepresentationsGrid(r);
-					self.isLoadingVersion = false;
-					self.setFocusIn(self.$refs.publication);
-					self.refreshSubmission();
+					this.workingPublication = {};
+					this.workingPublication = r;
+					this.updatePublicationInList(r);
+					this.setPublicationForms(r);
+					this.isLoadingVersion = false;
+					this.setFocusIn(this.$refs.publication);
+					this.refreshSubmission();
 				}
 			});
 		},
@@ -529,7 +500,6 @@ export default {
 	watch: {
 		workingPublication(newVal, oldVal) {
 			this.setPublicationForms(newVal);
-			this.loadRepresentationsGrid(newVal);
 			if (newVal.id === this.currentPublication.id) {
 				this.currentPublication = {};
 				this.currentPublication = newVal;
@@ -583,16 +553,6 @@ export default {
 		 * Load forms
 		 */
 		this.setPublicationForms(this.workingPublication);
-	},
-	mounted() {
-		/**
-		 * Load publication grids
-		 *
-		 * Add a delay to allow the workflow requests to be sent first
-		 */
-		setTimeout(() => {
-			this.loadRepresentationsGrid(this.workingPublication);
-		}, 1000);
 	},
 	destroyed() {
 		pkp.eventBus.$off('form-success');
@@ -718,9 +678,8 @@ export default {
 	}
 }
 
-// Integrate the grids in the publication tab
-.pkpWorkflow__contributors,
-#representations-grid {
+// Position list panels inside one of the publication tabs
+.pkpWorkflow__listPanelInTab {
 	padding-top: 2rem;
 }
 </style>

@@ -248,6 +248,13 @@
 						</li>
 						<li>
 							<router-link
+								to="/component/ListPanel/components/GalleysListPanel"
+							>
+								GalleysListPanel
+							</router-link>
+						</li>
+						<li>
+							<router-link
 								to="/component/ListPanel/components/InstitutionsListPanel"
 							>
 								InstitutionsListPanel

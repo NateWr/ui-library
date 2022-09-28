@@ -41,6 +41,7 @@ import ComponentFileUploader from './docs/components/FileUploader/ComponentFileU
 import ComponentFileUploadProgress from './docs/components/FileUploadProgress/ComponentFileUploadProgress.vue';
 import ComponentFilter from './docs/components/Filter/ComponentFilter.vue';
 import ComponentForm from './docs/components/Form/ComponentForm.vue';
+import ComponentGalleysListPanel from './docs/components/ListPanel/ComponentGalleysListPanel.vue';
 import ComponentHeader from './docs/components/Header/ComponentHeader.vue';
 import ComponentHelpButton from './docs/components/HelpButton/ComponentHelpButton.vue';
 import ComponentIcon from './docs/components/Icon/ComponentIcon.vue';
@@ -306,6 +307,11 @@ export default new Router({
 			path: '/component/ListPanel/components/EmailTemplatesListPanel/:example?',
 			name: 'EmailTemplatesListPanel',
 			component: ComponentEmailTemplatesListPanel
+		},
+		{
+			path: '/component/ListPanel/components/GalleysListPanel/:example?',
+			name: 'GalleysListPanel',
+			component: ComponentGalleysListPanel
 		},
 		{
 			path: '/component/ListPanel/components/InstitutionsListPanel/:example?',
