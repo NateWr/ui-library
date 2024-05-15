@@ -98,8 +98,8 @@ window.pkp = {
 		'common.unknownError':
 			'An unexpected error has occurred. Please reload the page and try again.',
 		'common.view': 'View',
-		'common.viewLess': 'Hide expanded details about {$name}',
-		'common.viewMore': 'Show more details about {$name}',
+		'list.viewLess': 'Hide expanded details about {$name}',
+		'list.viewMore': 'Show more details about {$name}',
 		'common.viewWithName': 'View {$name}',
 		'common.yes': 'Yes',
 		'form.dataHasChanged':
@@ -114,7 +114,14 @@ window.pkp = {
 		'form.multilingualProgress': '{$count}/{$total} languages completed',
 		'form.saved': 'Saved',
 		'help.help': 'Help',
-		'validator.required': 'This field is required.'
+		'validator.required': 'This field is required.',
+		'common.order': 'Order',
+		'author.users.contributor.setPrincipalContact': 'Set Primary Contact',
+		'author.users.contributor.principalContact': 'Primary Contact',
+		'submission.contributors': 'Contributors',
+		'grid.action.saveOrdering': 'Save Order',
+		'grid.action.order': 'Order',
+		'contributor.listPanel.preview': 'Preview'
 	}
 };
 

@@ -360,12 +360,16 @@ export default {
 					name: 'description',
 					description: this.localize(emailTemplate.description),
 					label: this.descriptionLabel,
-					groupId: 'default'
+					groupId: 'default',
+					isMultilingual: true
 				});
 			}
 
 			activeForm.fields = activeForm.fields.map(field => {
-				if (Object.keys(emailTemplate).includes(field.name)) {
+				if (
+					Object.keys(emailTemplate).includes(field.name) &&
+					field.name !== 'description'
+				) {
 					field.value = emailTemplate[field.name];
 				}
 				return field;
